@@ -1,5 +1,6 @@
 import React from 'react'
 import SideNav from './_components/SideNav'
+import Header from './_components/Header'
 
 const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     return (
@@ -8,6 +9,7 @@ const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
                 <SideNav />
             </div>
             <div className="md:ml-64">
+                <Header/>
                 {children}
             </div>
         </div>
