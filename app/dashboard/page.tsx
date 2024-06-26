@@ -1,9 +1,15 @@
 import React from 'react'
+import SearchSection from './_components/SearchSection'
+import TemplateListSection from './_components/TemplateListSection'
 
 const page = () => {
   return (
     <div>
-      Dashboard
+      {/* Search Section  */}
+      <SearchSection/>
+
+      {/* template list section */}
+      <TemplateListSection/>
     </div>
   )
 }
