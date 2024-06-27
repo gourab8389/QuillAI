@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import FormSection from '../_components/FormSection'
 import OutputSection from '../_components/OutputSection'
 import { TEMPLATE } from '../../_components/TemplateListSection'
@@ -12,6 +12,7 @@ import { db } from '@/utils/db'
 import { AIOutput } from '@/utils/schema'
 import { useUser } from '@clerk/nextjs'
 import moment from 'moment'
+import { TotalUsageContext } from '@/app/(context)/TotalUsageContext'
 
 interface PROPS {
   params: {
@@ -30,8 +31,13 @@ const CreateNewContent = (props: PROPS) => {
 
   const {user} = useUser();
 
+  const {totalUsage, setTotalUsage}= useContext<any>(TotalUsageContext)
 
   const GenerateAIContent = async (formData: any) => {
+    if(totalUsage>=30000){
+      console.log("pls upgrade")
+      return;
+    }
     setLoading(true);
     const SelectedPrompt = selectedTemplate?.aiPrompt;
 
