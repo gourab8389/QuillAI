@@ -27,12 +27,12 @@ const CreateNewContent = (props: PROPS) => {
       <Link href={'/dashboard'}>
       <Button> <ArrowLeft/> Back</Button>
       </Link>
-      <div className='grid grid-cols-2 md:grid-cols-3 gap-10 bg-slate-100 py-5'>
+      <div className='grid grid-cols-2 md:grid-cols-3 gap-5 py-5'>
         {/* FormSection */}
         <FormSection selectedTemplate={selectedTemplate} userFormInput={(v: any) => console.log(v)} />
 
         {/* OutputSection */}
-        <div className="">
+        <div className="col-span-2">
           <OutputSection />
         </div>
       </div>
