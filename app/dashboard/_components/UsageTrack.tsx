@@ -1,9 +1,38 @@
+"use client"
 import { Button } from '@/components/ui/button'
-import { CreditCard } from 'lucide-react'
-import Image from 'next/image'
-import React from 'react'
+import { db } from '@/utils/db'
+import { AIOutput } from '@/utils/schema'
+import { useUser } from '@clerk/nextjs'
+import {eq} from 'drizzle-orm'
+import React, { useEffect, useState } from 'react'
+import { HistoryItem } from '../history/_components/HistoryItems'
 
 const UsageTrack = () => {
+
+    const {user} = useUser();
+    const [totalUsage, setTotalUsage] = useState<number>(0);
+    
+
+    useEffect(()=>{
+        user&&GetData()
+    
+    },[user])
+
+    const GetData = async() => {
+        const result:HistoryItem[] = await db.select().from(AIOutput).where(eq(AIOutput.createdBy,user?.primaryEmailAddress?.emailAddress))
+
+        GetTotalUsage(result)
+    }
+    
+    const GetTotalUsage = (result:HistoryItem[])=>{
+        let total:number =0;
+        result.forEach(element => {
+            total = total+Number(element.aiResponse?.length)
+        });
+        setTotalUsage(total);
+        console.log(total)
+    }
+
     return (
         <div className='mr-10'>
             <div className="bg-primary text-white rounded-lg p-1">
@@ -11,12 +40,12 @@ const UsageTrack = () => {
                 <div className="h-2 bg-gray-600 w-full rounded-md mt-1">
 
                     <div className="h-2 bg-white rounded-md" style={{
-                        width: '35%'
+                        width:(totalUsage/30000)*100+'%'
                     }}>
 
                     </div>
                 </div>
-                <h2 className='text-sm my-1 ml-1'>350/10,000 credit used</h2>
+                <h2 className='text-sm my-1 ml-1'>{totalUsage}/30,000 credit used</h2>
             </div>
             <Button variant={'secondary'} className='w-full my-1 text-primary'>Upgrade</Button>
         </div>

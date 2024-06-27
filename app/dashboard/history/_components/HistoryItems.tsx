@@ -7,7 +7,7 @@ import { db } from '@/utils/db';
 import { AIOutput } from '@/utils/schema';
 import CopyButton from './CopyButton';
 
-interface HistoryItem {
+export interface HistoryItem {
   id: number;
   formData: string;
   aiResponse: string | null;
