@@ -4,13 +4,14 @@ import { db } from '@/utils/db'
 import { AIOutput } from '@/utils/schema'
 import { useUser } from '@clerk/nextjs'
 import {eq} from 'drizzle-orm'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { HistoryItem } from '../history/_components/HistoryItems'
+import { TotalUsageContext } from '@/app/(context)/TotalUsageContext'
 
 const UsageTrack = () => {
 
     const {user} = useUser();
-    const [totalUsage, setTotalUsage] = useState<number>(0);
+    const {totalUsage, setTotalUsage}= useContext<any>(TotalUsageContext) 
     
 
     useEffect(()=>{
