@@ -24,7 +24,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({ text, className }) => {
   const handleClick = () => {
     copyToClipboard(text);
     setLabel('Copied!');
-    setTimeout(() => setLabel('Copy'), 3000); // Reset label after 3 seconds
+    setTimeout(() => setLabel('Copy'), 3000); 
   };
 
   return (

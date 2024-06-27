@@ -13,6 +13,7 @@ import { AIOutput } from '@/utils/schema'
 import { useUser } from '@clerk/nextjs'
 import moment from 'moment'
 import { TotalUsageContext } from '@/app/(context)/TotalUsageContext'
+import { useRouter } from 'next/navigation'
 
 interface PROPS {
   params: {
@@ -21,53 +22,58 @@ interface PROPS {
 }
 
 const CreateNewContent = (props: PROPS) => {
-
   const selectedTemplate: TEMPLATE | undefined = Templates?.find((item) => item.slug == props.params['template-slug']);
 
-
   const [loading, setLoading] = useState(false)
-
   const [aiOutput, setAiOutput] = useState<string>('');
 
-  const {user} = useUser();
+  const { user } = useUser();
+  const router = useRouter();
 
-  const {totalUsage, setTotalUsage}= useContext<any>(TotalUsageContext)
+  const { totalUsage, setTotalUsage } = useContext(TotalUsageContext);
 
   const GenerateAIContent = async (formData: any) => {
-    if(totalUsage>=30000){
+    if (totalUsage >= 30000) {
       console.log("pls upgrade")
+      router.push('/dashboard/billing')
       return;
     }
     setLoading(true);
     const SelectedPrompt = selectedTemplate?.aiPrompt;
-
-    const FinalAiPrompt = JSON.stringify(formData)+", "+SelectedPrompt;
+    const FinalAiPrompt = JSON.stringify(formData) + ", " + SelectedPrompt;
 
     const result = await chatSession.sendMessage(FinalAiPrompt);
+    const aiResponseText = await result?.response.text();
 
-    setAiOutput(result?.response.text());
-    await SaveInDb(formData, selectedTemplate?.slug,result?.response.text());
+    setAiOutput(aiResponseText);
+    await SaveInDb(formData, selectedTemplate?.slug, aiResponseText);
+    
+
+    setTotalUsage(totalUsage + aiResponseText.length); 
     setLoading(false)
-
   }
 
-  const SaveInDb = async (formData:any, slug:any, aiResp:string) => {
+
+  const SaveInDb = async (formData: any, slug: any, aiResp: string) => {
+    if (!user?.primaryEmailAddress?.emailAddress) {
+      console.error("User email address is undefined");
+      return;
+    }
+    
     const result = await db.insert(AIOutput).values({
-      formData:formData,
-      templateSlug:slug,
-      aiResponse:aiResp,
-      createdBy:user?.primaryEmailAddress?.emailAddress,
-      createdAt:moment().format('DD/MM/YYYY'),
-      
+      formData: formData,
+      templateSlug: slug,
+      aiResponse: aiResp,
+      createdBy: user.primaryEmailAddress.emailAddress, 
+      createdAt: moment().format('DD/MM/YYYY'),
     })
     console.log(result);
   }
 
-
   return (
     <div className="bg-slate-100 p-5">
       <Link href={'/dashboard'}>
-      <Button> <ArrowLeft/> Back</Button>
+        <Button> <ArrowLeft /> Back</Button>
       </Link>
       <div className='grid grid-cols-2 md:grid-cols-3 gap-5 py-5'>
         {/* FormSection */}
@@ -75,7 +81,7 @@ const CreateNewContent = (props: PROPS) => {
 
         {/* OutputSection */}
         <div className="col-span-2">
-          <OutputSection aiOutput ={aiOutput} />
+          <OutputSection aiOutput={aiOutput} />
         </div>
       </div>
     </div>
@@ -83,4 +89,3 @@ const CreateNewContent = (props: PROPS) => {
 }
 
 export default CreateNewContent
-
