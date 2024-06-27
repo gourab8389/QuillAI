@@ -1,6 +1,7 @@
 "use client"
 import { MenuList } from '@/constants'
 import Image from 'next/image'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect } from 'react'
 
@@ -9,7 +10,7 @@ const SideNav = () => {
     const path = usePathname();
     useEffect(()=>{
         console.log(path)
-    })
+    },[path])
 
     return (
         <div className='h-screen p-5 shadow-sm border bg-white'>
@@ -22,10 +23,12 @@ const SideNav = () => {
             <div className="mt-3">
 
                 {MenuList.map((menu, index) => (
+                    <Link key={index} href={menu.path}>
                     <div className={`flex gap-2 mb-2 p-3 hover:bg-primary hover:text-white rounded-lg cursor-pointer items-center ${path==menu.path&&'bg-primary text-white'}`}>
                         <menu.icon className='w-6 h-6'/>
                         <h2 className='text-lg'>{menu.name}</h2>
                     </div>
+                    </Link>
                 ))}
             </div>
         </div>
