@@ -15,12 +15,14 @@ const SideNav = () => {
 
     return (
         <div className='h-screen relative p-5 shadow-sm border bg-white'>
-            <div className="flex justify-center">
+            <Link href={'/'}>
+            <div className="flex justify-center cursor-pointer">
 
                 <Image src={'/logo.svg'} alt='logo' width={60} height={70} />
                 <Image src={'/logo2.svg'} alt='logo2' width={70} height={80}/>
             </div>
-            <hr className='my-4 border' />
+            </Link>
+            <hr className='my-6 border' />
             <div className="mt-2">
 
                 {MenuList.map((menu, index) => (
