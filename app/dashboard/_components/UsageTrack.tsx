@@ -7,16 +7,24 @@ import { eq } from 'drizzle-orm'
 import React, { useContext, useEffect } from 'react'
 import { HistoryItem } from '../history/_components/HistoryItems'
 import { TotalUsageContext } from '@/app/(context)/TotalUsageContext'
+import { UpdateCreditUsageContext } from '@/app/(context)/UpdateCredit'
 
 const UsageTrack = () => {
     const { user } = useUser();
     const { totalUsage, setTotalUsage } = useContext(TotalUsageContext);
+    const { UpdateCreditUsage, setUpdateCreditUsage } = useContext(UpdateCreditUsageContext)
 
     useEffect(() => {
         if (user?.primaryEmailAddress?.emailAddress) { 
             GetData(user.primaryEmailAddress.emailAddress); 
         }
     }, [user]);
+
+    useEffect(() => {
+        if (user?.primaryEmailAddress?.emailAddress) {
+            GetData(user.primaryEmailAddress.emailAddress); 
+        }
+    }, [UpdateCreditUsage]);
 
     const GetData = async (emailAddress: string) => { 
         const result: HistoryItem[] = await db.select().from(AIOutput).where(eq(AIOutput.createdBy, emailAddress)); 
@@ -31,7 +39,6 @@ const UsageTrack = () => {
         setTotalUsage(total);
         console.log(total);
     }
-
 
     return (
         <div className='mr-10'>
