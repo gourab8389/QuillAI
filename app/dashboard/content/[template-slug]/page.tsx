@@ -14,6 +14,7 @@ import { useUser } from '@clerk/nextjs'
 import moment from 'moment'
 import { TotalUsageContext } from '@/app/(context)/TotalUsageContext'
 import { useRouter } from 'next/navigation'
+import { UpdateCreditUsageContext } from '@/app/(context)/UpdateCredit'
 
 interface PROPS {
   params: {
@@ -31,7 +32,13 @@ const CreateNewContent = (props: PROPS) => {
   const router = useRouter();
 
   const { totalUsage, setTotalUsage } = useContext(TotalUsageContext);
+  const {UpdateCreditUsage, setUpdateCreditUsage} = useContext(UpdateCreditUsageContext)
 
+  /**
+   * used to generate content from AI
+   * @param formData 
+   * @returns 
+   */
   const GenerateAIContent = async (formData: any) => {
     if (totalUsage >= 30000) {
       console.log("pls upgrade")
@@ -51,6 +58,8 @@ const CreateNewContent = (props: PROPS) => {
 
     setTotalUsage(totalUsage + aiResponseText.length); 
     setLoading(false)
+    
+    setUpdateCreditUsage(Date.now())
   }
 
 
