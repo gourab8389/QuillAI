@@ -8,7 +8,7 @@ import { UpdateCreditUsageContext } from '../(context)/UpdateCredit'
 const Layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 
     const [totalUsage, setTotalUsage] = useState<number>(0);
-    const [UpdateCreditUsage, setUpdateCreditUsage] = useState<any>()
+    const [UpdateCreditUsage, setUpdateCreditUsage]= useState<any>();
 
     return (
         <TotalUsageContext.Provider value={{ totalUsage, setTotalUsage }}>
