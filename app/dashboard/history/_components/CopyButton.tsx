@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 interface CopyButtonProps {
   text: string;
   className?: string;
+  onClick?: () => void;
 }
 
 const CopyButton: React.FC<CopyButtonProps> = ({ text, className }) => {

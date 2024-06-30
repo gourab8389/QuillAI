@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { useClipboard } from 'use-clipboard-copy';
 import moment from 'moment';
-import { toast } from 'sonner';
+import { eq } from 'drizzle-orm'
 import { db } from '@/utils/db';
 import { AIOutput } from '@/utils/schema';
 import CopyButton from './CopyButton';
+import { useUser } from '@clerk/nextjs';
 
 export interface HistoryItem {
   id: number;
@@ -17,28 +18,27 @@ export interface HistoryItem {
 }
 
 const HistoryItems = () => {
-
-    
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
-  const clipboard = useClipboard();
+  const { user } = useUser();
 
   useEffect(() => {
-    const fetchHistoryItems = async () => {
-      const fetchedItems = await db.select().from(AIOutput).execute();
-      const historyItems = fetchedItems.map((item) => ({
-        ...item,
-        aiResponse: item.aiResponse ?? '',
-        createdAt: item.createdAt ?? '',
-      }));
-      setHistoryItems(historyItems);
-    };
-    fetchHistoryItems();
-  }, []);
+      const fetchHistoryItems = async () => {
+          if (user?.primaryEmailAddress?.emailAddress) {
+              const fetchedItems = await db
+                  .select()
+                  .from(AIOutput)
+                  .where(eq(AIOutput.createdBy, user.primaryEmailAddress.emailAddress)); // Filter by current user's email address
+              const formattedItems = fetchedItems.map((item) => ({
+                  ...item,
+                  aiResponse: item.aiResponse ?? '',
+                  createdAt: item.createdAt ?? '',
+              }));
+              setHistoryItems(formattedItems);
+          }
+      };
+      fetchHistoryItems();
+  }, [user]);
 
-  const handleCopy = (text: string) => {
-    clipboard.copy(text);
-    toast('Copied to clipboard');
-  };
 
   return (
     <div className="p-5">
