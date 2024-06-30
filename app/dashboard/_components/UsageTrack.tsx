@@ -8,6 +8,7 @@ import React, { useContext, useEffect } from 'react'
 import { HistoryItem } from '../history/_components/HistoryItems'
 import { TotalUsageContext } from '@/app/(context)/TotalUsageContext'
 import { UpdateCreditUsageContext } from '@/app/(context)/UpdateCredit'
+import Link from 'next/link'
 
 const UsageTrack = () => {
     const { user } = useUser();
@@ -52,7 +53,9 @@ const UsageTrack = () => {
                 </div>
                 <h2 className='text-sm my-1 ml-1'>{totalUsage}/30,000 credit used</h2>
             </div>
+            <Link href={'/billing'}>
             <Button variant={'secondary'} className='w-full my-1 text-primary'>Upgrade</Button>
+            </Link>
         </div>
     )
 }
