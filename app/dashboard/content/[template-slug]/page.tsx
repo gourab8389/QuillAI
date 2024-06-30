@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import FormSection from '../_components/FormSection'
 import OutputSection from '../_components/OutputSection'
 import { TEMPLATE } from '../../_components/TemplateListSection'
@@ -34,11 +34,10 @@ const CreateNewContent = (props: PROPS) => {
   const { totalUsage, setTotalUsage } = useContext(TotalUsageContext);
   const {UpdateCreditUsage, setUpdateCreditUsage} = useContext(UpdateCreditUsageContext)
 
-  /**
-   * used to generate content from AI
-   * @param formData 
-   * @returns 
-   */
+  useEffect(() => {
+    document.getElementById('form-section')?.scrollIntoView();
+  }, []);
+
   const GenerateAIContent = async (formData: any) => {
     if (totalUsage >= 30000) {
       console.log("pls upgrade")
@@ -59,7 +58,7 @@ const CreateNewContent = (props: PROPS) => {
     setTotalUsage(totalUsage + aiResponseText.length); 
     setLoading(false)
     
-    setUpdateCreditUsage(Date.now())
+    setUpdateCreditUsage(Date.now)
   }
 
 
@@ -84,12 +83,14 @@ const CreateNewContent = (props: PROPS) => {
       <Link href={'/dashboard'}>
         <Button> <ArrowLeft /> Back</Button>
       </Link>
-      <div className='grid grid-cols-2 md:grid-cols-3 gap-5 py-5'>
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-5 py-5'>
         {/* FormSection */}
-        <FormSection selectedTemplate={selectedTemplate} userFormInput={(v: any) => GenerateAIContent(v)} loading={loading} />
+        <div className='col-span-1 md:col-span-1' id="form-section">
+          <FormSection selectedTemplate={selectedTemplate} userFormInput={(v: any) => GenerateAIContent(v)} loading={loading} />
+        </div>
 
         {/* OutputSection */}
-        <div className="col-span-2">
+        <div className="col-span-1 md:col-span-2">
           <OutputSection aiOutput={aiOutput} />
         </div>
       </div>
