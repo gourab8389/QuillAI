@@ -1,6 +1,5 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { useClipboard } from 'use-clipboard-copy';
 import moment from 'moment';
 import { eq } from 'drizzle-orm'
 import { db } from '@/utils/db';
@@ -27,7 +26,7 @@ const HistoryItems = () => {
               const fetchedItems = await db
                   .select()
                   .from(AIOutput)
-                  .where(eq(AIOutput.createdBy, user.primaryEmailAddress.emailAddress)); // Filter by current user's email address
+                  .where(eq(AIOutput.createdBy, user.primaryEmailAddress.emailAddress)); 
               const formattedItems = fetchedItems.map((item) => ({
                   ...item,
                   aiResponse: item.aiResponse ?? '',
